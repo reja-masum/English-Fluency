@@ -1,6 +1,25 @@
-<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
-<meta name="claude:viewport-fit-sides" content="cover">
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="theme-color" content="#0A7B5E">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Practice everyday English: build sentences, talk with Sam, write daily and track your progress.">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="English Fluency">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" type="image/png" href="icon-192.png">
+<link rel="apple-touch-icon" href="icon-192.png">
 <title>English Fluency</title>
+<style>
+:root{color-scheme:light;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+html{-webkit-text-size-adjust:100%}
+[hidden]{display:none!important}
+img{max-width:100%}
+</style>
+
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Hind+Siliguri:wght@400;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
@@ -196,7 +215,15 @@ mark.bad{background:transparent;color:var(--warn);text-decoration:underline wavy
   .mrow .prog{grid-column:1/-1;order:3}
 }
 @media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.install{position:fixed;left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));bottom:calc(84px + env(safe-area-inset-bottom,0px));z-index:30;max-width:736px;margin:0 auto;display:flex;align-items:center;gap:12px;padding:12px 14px;background:var(--surface);border:1.5px solid var(--accent);border-radius:16px;box-shadow:0 10px 30px rgba(0,0,0,.25)}
+.install img{border-radius:10px;flex:none}
+.itext{flex:1;min-width:0;font-size:15px}
+.ibtns{display:flex;flex-direction:column;gap:2px;align-items:stretch}
+@media (max-width:420px){.install{flex-wrap:wrap}.ibtns{flex-direction:row;width:100%}.ibtns .btn{flex:1}}
 </style>
+</head>
+<body>
 
 <div class="app">
   <header class="top">
@@ -220,6 +247,12 @@ mark.bad{background:transparent;color:var(--warn);text-decoration:underline wavy
     <button data-act="nav" data-view="progress"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V5M16 20v-6M21 20H3"/></svg>Progress</button>
   </div>
 </nav>
+
+<div class="install" id="install" role="dialog" aria-label="Install English Fluency" hidden>
+  <img src="icon-192.png" alt="" width="44" height="44">
+  <div class="itext"></div>
+  <div class="ibtns"><button class="btn sm" data-inst="go">Install</button><button class="btn quiet sm" data-inst="later">Not now</button></div>
+</div>
 
 <script>
 (function(){
@@ -432,14 +465,28 @@ function addMistake(wrong,right,why,src){
 var samplePromise=null;
 function getSample(){
   if(!samplePromise)samplePromise=(async function(){try{if(!window.claude||!window.claude.use)return null;return await window.claude.use('sample')}catch(e){return null}})();
+  samplePromise.then(function(v){if(!v)samplePromise=null});
   return samplePromise;
 }
 async function askText(input,opts){var s=await getSample();if(!s)throw {code:'unavailable'};var r=await s(input,Object.assign({cache:false},opts||{}));return r.text}
-async function askJSON(input,opts){var s=await getSample();if(!s)throw {code:'unavailable'};return s.json(input,Object.assign({cache:false},opts||{}))}
+function parseLoose(t){
+  t=String(t||'').trim();
+  try{return JSON.parse(t)}catch(e){}
+  var m=t.match(/```(?:json)?\s*([\s\S]*?)```/i);
+  if(m){try{return JSON.parse(m[1])}catch(e){}}
+  var a=t.indexOf('{'),b=t.lastIndexOf('}');
+  if(a>-1&&b>a){try{return JSON.parse(t.slice(a,b+1))}catch(e){}}
+  throw {code:'invalid_json',text:t};
+}
+async function askJSON(input,opts){
+  var s=await getSample();if(!s)throw {code:'unavailable'};
+  var r=await s(input,Object.assign({cache:false},opts||{}));
+  return parseLoose(r.text);
+}
 function errCopy(e){
   var c=e&&e.code;
   if(c==='not_granted')return 'Claude feedback is turned off for this page. You can still practice without it.';
-  if(c==='unavailable'||c==='sampling_disabled'||c==='not_declared'||c==='capability_disabled'||c==='capability_removed')return 'Claude feedback is not available in this view.';
+  if(c==='unavailable'||c==='sampling_disabled'||c==='not_declared'||c==='capability_disabled'||c==='capability_removed')return window.claude?'Claude feedback is not available in this view. (reason: '+c+')':'Sam and the writing checker need Claude, so they only work in the Claude version of this app. Everything else works here.';
   if(c==='rate_limited')return 'Too many requests right now. Wait a minute, then try again.';
   if(c==='session_expired')return 'Please sign in again, then try once more.';
   return 'Something went wrong. Please try again.';
@@ -609,7 +656,7 @@ function renderSpeak(){
   var el=$('#v-speak'),h='';
   if(SP.phase==='setup'){
     var sc=scnOf(SP.topic);
-    h='<h1 class="h1">Speaking partner</h1><p class="lede">Talk with Sam, one to one, for up to 20 minutes. Practice the real conversations of daily life, or pick any topic. Sam uses simple English and gently fixes one mistake at a time.</p>'+
+    h=claudeNote()+'<h1 class="h1">Speaking partner</h1><p class="lede">Talk with Sam, one to one, for up to 20 minutes. Practice the real conversations of daily life, or pick any topic. Sam uses simple English and gently fixes one mistake at a time.</p>'+
     '<div class="label">Daily life conversations</div><div class="chips">'+SCENARIOS.map(function(s){return '<button class="chip'+(SP.kind==='daily'&&s.name===SP.topic?' on':'')+'" data-act="topic" data-kind="daily" data-t="'+esc(s.name)+'">'+esc(s.name)+'</button>'}).join('')+'</div>'+
     (SP.kind==='daily'&&sc?'<p class="small" style="margin:14px 0 4px">Sam may ask you things like:</p><ul class="ex">'+sc.qs.map(function(q){return '<li><div class="en" style="font-size:17px">'+esc(q)+'</div><button class="icon sm" data-act="say" data-t="'+esc(q)+'" aria-label="Listen: '+esc(q)+'">'+IC.listen+'</button></li>'}).join('')+'</ul>':'')+
     '<div class="label">Or talk about a topic</div><div class="chips">'+TOPICS.map(function(t){return '<button class="chip'+(SP.kind==='topic'&&t===SP.topic?' on':'')+'" data-act="topic" data-kind="topic" data-t="'+esc(t)+'">'+esc(t)+'</button>'}).join('')+'</div>'+
@@ -781,7 +828,7 @@ function getDraft(){try{return localStorage.getItem('sentencegym:draft')||''}cat
 function setDraft(t){try{localStorage.setItem('sentencegym:draft',t)}catch(e){}}
 function renderWrite(){
   var el=$('#v-write');
-  el.innerHTML='<h1 class="h1">Daily writing</h1><p class="lede">Write 3 to 5 sentences. Short and simple is fine. Claude checks each sentence and shows a better version.</p>'+
+  el.innerHTML=claudeNote()+'<h1 class="h1">Daily writing</h1><p class="lede">Write 3 to 5 sentences. Short and simple is fine. Claude checks each sentence and shows a better version.</p>'+
   '<div class="label">Today’s question</div><p class="pq">'+esc(todayPrompt())+'</p>'+
   '<textarea id="wt" class="ta" rows="6" placeholder="Write here. One idea in each sentence." aria-label="Your writing"></textarea>'+
   '<div class="cnt" id="wcount"></div>'+
@@ -973,10 +1020,47 @@ async function wordExamples(){
   var o=$('#wdOut');if(view==='words'&&o&&WD.id===cur.id)o.innerHTML=WD.out;
 }
 
+/* ---------- standalone (GitHub Pages) extras ---------- */
+var CLAUDE_APP_URL='https://claude.ai/artifact/LGRZkbLYcDqLMBS3tH27hu';
+function claudeNote(){
+  if(window.claude)return '';
+  return '<div class="card" style="margin:0 0 16px"><strong>Sam needs Claude.</strong><p class="small" style="margin:6px 0 10px">Conversations and writing checks run inside Claude. Open the Claude version for those. Patterns, words and progress work here.</p><a class="btn sm" style="display:inline-flex;align-items:center;text-decoration:none" href="'+CLAUDE_APP_URL+'" target="_blank" rel="noopener">Open in Claude</a></div>';
+}
+var deferredPrompt=null;
+var isInstalledApp=(window.matchMedia&&window.matchMedia('(display-mode: standalone)').matches)||window.navigator.standalone===true;
+var isIOS=/iphone|ipad|ipod/i.test(navigator.userAgent);
+function showInstall(kind){
+  if(isInstalledApp)return;
+  try{if(sessionStorage.getItem('ef:later'))return}catch(e){}
+  var b=document.getElementById('install');if(!b)return;
+  b.querySelector('.itext').textContent=kind==='ios'
+    ?'Install English Fluency: tap the Share button, then choose Add to Home Screen.'
+    :'Install English Fluency on your device. It opens like an app and works offline.';
+  b.querySelector('[data-inst=go]').hidden=(kind==='ios');
+  b.hidden=false;
+}
+window.addEventListener('beforeinstallprompt',function(e){e.preventDefault();deferredPrompt=e;showInstall('std')});
+window.addEventListener('appinstalled',function(){deferredPrompt=null;var b=document.getElementById('install');if(b)b.hidden=true});
+if(isIOS&&!isInstalledApp)setTimeout(function(){showInstall('ios')},1500);
+document.addEventListener('click',function(e){
+  var t=e.target.closest('[data-inst]');if(!t)return;
+  var b=document.getElementById('install');
+  if(t.dataset.inst==='go'&&deferredPrompt){
+    deferredPrompt.prompt();
+    deferredPrompt.userChoice.then(function(){deferredPrompt=null;if(b)b.hidden=true}).catch(function(){});
+  }else{
+    try{sessionStorage.setItem('ef:later','1')}catch(err){}
+    if(b)b.hidden=true;
+  }
+});
+if('serviceWorker' in navigator&&/^https?:$/.test(location.protocol)){
+  window.addEventListener('load',function(){navigator.serviceWorker.register('sw.js').catch(function(){})});
+}
+
 /* ---------- boot ---------- */
 updateStreak();
 renderPractice();
 })();
 </script>
-
-</body></html>
+</body>
+</html>
