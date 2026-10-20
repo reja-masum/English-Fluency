@@ -1,0 +1,982 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<meta name="claude:viewport-fit-sides" content="cover">
+<title>English Fluency</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=Hind+Siliguri:wght@400;600&family=JetBrains+Mono:wght@500&display=swap" rel="stylesheet">
+<style>
+/* Layout: one narrow column, a ruled "answer line" as the core motif, bottom tab bar on every width. */
+:root{
+  --bg:#F1F5F1;
+  --surface:#FFFFFF;
+  --sunk:#E3EBE5;
+  --fg:#10231D;
+  --muted:#52675F;
+  --line:#C9D7CE;
+  --accent:#0A7B5E;
+  --accent-ink:#FFFFFF;
+  --accent-soft:#D3EEE3;
+  --bar-old:#9FD2C1;
+  --warn:#BE3825;
+  --warn-soft:#F9DED8;
+  --f-display:'Bricolage Grotesque',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-body:'Atkinson Hyperlegible',system-ui,-apple-system,'Segoe UI',sans-serif;
+  --f-bn:'Hind Siliguri','Noto Sans Bengali','Nirmala UI',sans-serif;
+  --f-mono:'JetBrains Mono',ui-monospace,Menlo,Consolas,monospace;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --bg:#0D1915;--surface:#15251F;--sunk:#1C2F28;--fg:#E5EFE9;--muted:#9AAFA6;--line:#2A4037;
+    --accent:#45C7A0;--accent-ink:#04231A;--accent-soft:#17382D;--bar-old:#2B6C58;
+    --warn:#F27D66;--warn-soft:#3A1F19;color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0D1915;--surface:#15251F;--sunk:#1C2F28;--fg:#E5EFE9;--muted:#9AAFA6;--line:#2A4037;
+  --accent:#45C7A0;--accent-ink:#04231A;--accent-soft:#17382D;--bar-old:#2B6C58;
+  --warn:#F27D66;--warn-soft:#3A1F19;color-scheme:dark;
+}
+*{box-sizing:border-box}
+body{
+  margin:0;background:var(--bg);color:var(--fg);
+  font:400 17px/1.5 var(--f-body);
+  padding-block:10px 110px;
+  padding-left:max(16px,env(safe-area-inset-left,0px));
+  padding-right:max(16px,env(safe-area-inset-right,0px));
+}
+button,input,select,textarea{font:inherit;color:inherit}
+:focus-visible{outline:3px solid var(--accent);outline-offset:2px}
+.app{max-width:760px;margin:0 auto}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:6px 0 12px}
+.brand{display:flex;align-items:center;gap:10px;font:800 21px/1 var(--f-display);letter-spacing:-.01em}
+.mark{width:28px;height:28px;border-radius:8px;background:var(--accent);position:relative;flex:none}
+.mark::before{content:"";position:absolute;left:6px;right:6px;bottom:8px;height:3px;border-radius:2px;background:var(--accent-ink)}
+.mark::after{content:"";position:absolute;left:6px;width:9px;bottom:14px;height:6px;border-radius:2px;background:var(--accent-ink);opacity:.85}
+.streak{font:700 14px/1 var(--f-body);padding:8px 12px;border-radius:999px;background:var(--surface);border:1px solid var(--line);color:var(--fg);white-space:nowrap}
+.streak b{color:var(--warn)}
+.h1{font:800 29px/1.1 var(--f-display);letter-spacing:-.015em;text-wrap:balance;margin:10px 0 8px}
+.h2{font:800 19px/1.2 var(--f-display);margin:26px 0 10px}
+.lede{color:var(--muted);margin:0 0 16px;max-width:62ch}
+.small{font-size:14px;color:var(--muted)}
+.mono{font-family:var(--f-mono);font-size:13px;color:var(--muted)}
+.label{font:700 12px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:18px 0 8px}
+.btn{min-height:46px;padding:10px 18px;border-radius:12px;border:2px solid var(--accent);background:var(--accent);color:var(--accent-ink);font-weight:700;cursor:pointer}
+.btn:hover{filter:brightness(1.06)}
+.btn.ghost{background:transparent;color:var(--accent)}
+.btn.quiet{background:transparent;border-color:transparent;color:var(--muted);text-decoration:underline}
+.btn.danger{background:var(--warn);border-color:var(--warn);color:#fff}
+.btn.sm{min-height:38px;padding:6px 12px;font-size:15px}
+.btn[disabled]{opacity:.5;cursor:default}
+.icon{width:44px;height:44px;border-radius:12px;border:1.5px solid var(--line);background:var(--surface);display:inline-grid;place-items:center;cursor:pointer;flex:none}
+.icon.sm{width:36px;height:36px;border-radius:10px}
+.icon svg{width:20px;height:20px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.icon.on{background:var(--warn);border-color:var(--warn);color:#fff}
+.actions{display:flex;flex-wrap:wrap;gap:10px;margin:14px 0}
+.seg{display:inline-flex;flex-wrap:wrap;gap:4px;padding:4px;background:var(--sunk);border-radius:14px;margin:4px 0 8px}
+.seg button{min-height:40px;padding:6px 16px;border:0;border-radius:10px;background:transparent;color:var(--muted);font-weight:700;cursor:pointer}
+.seg button.on{background:var(--surface);color:var(--fg);box-shadow:0 1px 2px rgba(0,0,0,.12)}
+.chips{display:flex;flex-wrap:wrap;gap:8px}
+.chip{padding:9px 14px;border-radius:999px;border:1.5px solid var(--line);background:var(--surface);cursor:pointer;font-weight:700;font-size:15px}
+.chip.on{background:var(--accent);border-color:var(--accent);color:var(--accent-ink)}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:16px;padding:18px}
+.list{border-top:1px solid var(--line)}
+.row{display:flex;align-items:center;justify-content:space-between;gap:12px;width:100%;text-align:left;padding:14px 2px;background:transparent;border:0;border-bottom:1px solid var(--line);cursor:pointer;min-height:64px}
+.row:hover .row-title{color:var(--accent)}
+.row-main{display:flex;flex-direction:column;gap:3px;min-width:0}
+.row-title{font:800 18px/1.2 var(--f-display)}
+.row .mono{overflow-wrap:anywhere}
+.badge{flex:none;font:700 13px/1 var(--f-body);padding:7px 10px;border-radius:999px;background:var(--sunk);color:var(--muted)}
+.badge.has{background:var(--accent-soft);color:var(--accent)}
+.back{background:none;border:0;color:var(--accent);font-weight:700;cursor:pointer;padding:8px 0;min-height:40px}
+.formula{display:inline-block;padding:10px 14px;border-radius:10px;background:var(--sunk);color:var(--fg);margin:0 0 12px;overflow-wrap:anywhere}
+.rule{margin:0;max-width:62ch}
+.ex{list-style:none;padding:0;margin:0;border-top:1px solid var(--line)}
+.ex li{display:flex;justify-content:space-between;align-items:center;gap:12px;padding:12px 0;border-bottom:1px solid var(--line)}
+.ex .en{font-size:19px;font-weight:700}
+.ex .bn,.bnhelp{font-family:var(--f-bn);color:var(--muted);font-size:16px}
+.ta,.inp,.sel{width:100%;border:1.5px solid var(--line);background:var(--surface);border-radius:12px;padding:12px 14px;min-height:46px}
+.ta{resize:vertical;line-height:1.5}
+.sel{appearance:auto}
+.meta{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:10px}
+.tagchip{font:700 12px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:6px 10px;border-radius:999px;background:var(--accent-soft);color:var(--accent)}
+.count{color:var(--muted);font-size:14px;font-variant-numeric:tabular-nums}
+.prog{height:6px;border-radius:4px;background:var(--sunk);overflow:hidden;margin-bottom:14px}
+.prog i{display:block;height:100%;background:var(--accent);border-radius:4px;transition:width .3s}
+.bnbig{font:600 26px/1.35 var(--f-bn);margin:6px 0 2px;text-wrap:balance}
+.hint{color:var(--muted);margin:0 0 14px;font-size:15px}
+.answer{min-height:68px;display:flex;flex-wrap:wrap;align-items:flex-end;gap:8px;padding:8px 0 10px;border-bottom:3px solid var(--fg);margin-bottom:16px}
+.answer .ph{color:var(--muted);font-size:15px;align-self:center}
+.pool{display:flex;flex-wrap:wrap;gap:8px;min-height:52px}
+.tile{min-height:46px;padding:8px 14px;border-radius:10px;border:1.5px solid var(--line);background:var(--surface);font-size:19px;cursor:pointer;box-shadow:0 2px 0 var(--line)}
+.tile:hover{border-color:var(--accent)}
+.answer .tile{background:var(--accent-soft);border-color:var(--accent)}
+.tile[disabled]{opacity:.6;cursor:default}
+.fb{border-radius:12px;padding:14px 16px;margin-top:14px}
+.fb.good{background:var(--accent-soft)}
+.fb.bad{background:var(--warn-soft)}
+.fb .lbl{font:700 12px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin:4px 0 4px}
+.fb .line{font-size:19px;margin-bottom:8px}
+.fb .line.ok{color:var(--accent);font-weight:700}
+mark.bad{background:transparent;color:var(--warn);text-decoration:underline wavy;text-underline-offset:4px}
+.why{margin-top:10px;padding:12px 14px;border-radius:12px;background:var(--sunk);white-space:pre-wrap}
+.note{font-size:14px;color:var(--muted);margin:10px 0}
+.timer{display:flex;align-items:center;justify-content:space-between;gap:12px;margin:6px 0 8px}
+.clock{font:500 34px/1 var(--f-mono);color:var(--fg);font-variant-numeric:tabular-nums}
+.t-label{display:block;font:700 12px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
+.msgs{display:flex;flex-direction:column;gap:12px;padding:14px;border:1px solid var(--line);border-radius:16px;background:var(--surface);height:min(52vh,460px);overflow-y:auto;margin:10px 0}
+.msg{display:flex;flex-direction:column;gap:6px;max-width:88%}
+.msg.a{align-self:flex-start;flex-direction:row;align-items:flex-start;gap:6px}
+.msg.u{align-self:flex-end;align-items:flex-end}
+.bub{padding:10px 14px;border-radius:14px;overflow-wrap:anywhere}
+.msg.a .bub{background:var(--sunk);border-bottom-left-radius:4px}
+.msg.u .bub{background:var(--accent);color:var(--accent-ink);border-bottom-right-radius:4px}
+.fix{align-self:flex-end;font-size:15px;padding:8px 12px;border-radius:10px;background:var(--accent-soft);display:flex;flex-direction:column;gap:2px;max-width:100%}
+.fix .lbl{font:700 11px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.fix .ok{font-weight:700;color:var(--accent)}
+.fix .why{margin:0;padding:0;background:none;color:var(--muted);font-size:14px}
+.sysmsg{align-self:center;text-align:center;font-size:14px;color:var(--muted);display:flex;flex-direction:column;gap:8px;align-items:center}
+.composer{display:flex;gap:10px;align-items:flex-end}
+.composer .ta{flex:1;min-width:0}
+.cbtns{display:flex;gap:8px;align-items:center}
+.sum h3{font:800 17px/1.2 var(--f-display);margin:18px 0 6px}
+.sum ul{margin:0;padding-left:20px}
+.sum li{margin:4px 0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:14px 0}
+.stat{padding:12px 14px;border-radius:12px;background:var(--surface);border:1px solid var(--line)}
+.stat b{display:block;font:800 26px/1.1 var(--f-display);font-variant-numeric:tabular-nums}
+.stat span{font-size:13px;color:var(--muted)}
+.pq{font:800 22px/1.3 var(--f-display);margin:6px 0 14px;text-wrap:balance}
+.cnt{font-size:14px;color:var(--muted);margin-top:6px;font-variant-numeric:tabular-nums}
+.fblist{display:flex;flex-direction:column;gap:10px;margin-top:14px}
+.fbi{padding:12px 14px;border-radius:12px}
+.fbi.good{background:var(--accent-soft)}
+.fbi.fix{background:var(--surface);border:1px solid var(--line)}
+.fbi .was{color:var(--warn);text-decoration:line-through;text-decoration-thickness:1.5px}
+.fbi .now{font-weight:700;margin-top:4px}
+.fbi .tag{font:700 11px/1 var(--f-body);letter-spacing:.08em;text-transform:uppercase;padding:4px 7px;border-radius:6px;background:var(--accent);color:var(--accent-ink);margin-right:6px;vertical-align:2px}
+.fbi .why{background:none;padding:0;margin-top:4px;color:var(--muted);font-size:15px}
+.tipline{margin:12px 0 0}
+.addrow{display:grid;grid-template-columns:1fr 1fr auto;gap:10px;align-items:center}
+.wrow{display:flex;align-items:center;justify-content:space-between;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);flex-wrap:wrap}
+.wrow .w{font-weight:700;font-size:18px}
+.wrow .m{color:var(--muted);font-size:15px}
+.wrow .btns{display:flex;gap:6px}
+.ex-tag{font:700 11px/1 var(--f-body);letter-spacing:.06em;text-transform:uppercase;padding:4px 7px;border-radius:6px;background:var(--sunk);color:var(--muted);margin-left:8px}
+.goal{display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center;margin:12px 0}
+.goal .prog{grid-column:1/-1;margin:0}
+.goal .done{color:var(--accent);font-weight:700}
+.big{display:flex;align-items:baseline;gap:10px;flex-wrap:wrap}
+.big b{font:800 54px/1 var(--f-display);color:var(--warn);font-variant-numeric:tabular-nums}
+.chart{display:flex;align-items:flex-end;gap:6px;height:130px;padding:8px 0 0;border-bottom:2px solid var(--fg)}
+.chart .col{flex:1;min-width:0;height:100%;display:flex;align-items:flex-end}
+.chart .bar{width:100%;min-height:3px;border-radius:5px 5px 0 0;background:var(--bar-old)}
+.chart .bar.today{background:var(--accent)}
+.axis{display:flex;gap:6px;margin-top:4px}
+.axis span{flex:1;text-align:center;font-size:12px;color:var(--muted)}
+.mrow{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line)}
+.mrow .prog{margin:0}
+.mrow .pct{font-size:14px;color:var(--muted);font-variant-numeric:tabular-nums;min-width:64px;text-align:right}
+.mist{padding:12px 0;border-bottom:1px solid var(--line);display:flex;gap:12px;justify-content:space-between;align-items:flex-start}
+.mist .wr{color:var(--warn);text-decoration:line-through}
+.mist .rt{font-weight:700;color:var(--accent)}
+.mist .src{font-size:12px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.nav{position:fixed;left:0;right:0;bottom:0;z-index:20;background:var(--surface);border-top:1px solid var(--line);
+  padding:6px max(8px,env(safe-area-inset-right,0px)) calc(6px + env(safe-area-inset-bottom,0px)) max(8px,env(safe-area-inset-left,0px))}
+.nav-in{max-width:760px;margin:0 auto;display:grid;grid-template-columns:repeat(5,1fr);gap:4px}
+.nav button{display:flex;flex-direction:column;align-items:center;gap:3px;min-height:56px;padding:6px 2px;border:0;border-radius:12px;background:transparent;color:var(--muted);font-size:12px;font-weight:700;cursor:pointer}
+.nav button[aria-current="page"]{color:var(--accent);background:var(--accent-soft)}
+.nav svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.check{display:flex;gap:10px;align-items:center;margin:14px 0;font-size:16px}
+.check input{width:20px;height:20px;accent-color:var(--accent)}
+@media (max-width:520px){
+  .addrow{grid-template-columns:1fr}
+  .bnbig{font-size:23px}
+  .h1{font-size:26px}
+  .mrow{grid-template-columns:1fr auto}
+  .mrow .prog{grid-column:1/-1;order:3}
+}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+
+<div class="app">
+  <header class="top">
+    <div class="brand"><span class="mark" aria-hidden="true"></span>English Fluency</div>
+    <div class="streak" id="streak">Start your streak</div>
+  </header>
+  <main id="main">
+    <section id="v-practice"></section>
+    <section id="v-speak" hidden></section>
+    <section id="v-write" hidden></section>
+    <section id="v-words" hidden></section>
+    <section id="v-progress" hidden></section>
+  </main>
+</div>
+<nav class="nav" id="nav" aria-label="Main">
+  <div class="nav-in">
+    <button data-act="nav" data-view="practice" aria-current="page"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="7" height="6" rx="1.5"/><rect x="12" y="5" width="9" height="6" rx="1.5"/><rect x="3" y="13" width="10" height="6" rx="1.5"/><rect x="15" y="13" width="6" height="6" rx="1.5"/></svg>Practice</button>
+    <button data-act="nav" data-view="speak"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>Speak</button>
+    <button data-act="nav" data-view="write"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20l1-4L16 5l3 3L8 19z"/><path d="M14 7l3 3"/></svg>Write</button>
+    <button data-act="nav" data-view="words"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 4h10a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h10"/></svg>Words</button>
+    <button data-act="nav" data-view="progress"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 20V11M10 20V5M16 20v-6M21 20H3"/></svg>Progress</button>
+  </div>
+</nav>
+
+<script>
+(function(){
+'use strict';
+
+/* ---------- helpers ---------- */
+var $=function(s,r){return (r||document).querySelector(s)};
+var $$=function(s,r){return Array.prototype.slice.call((r||document).querySelectorAll(s))};
+var esc=function(s){return String(s==null?'':s).replace(/[&<>"']/g,function(c){return {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]})};
+var uid=function(){return Math.random().toString(36).slice(2,9)};
+function shuffle(a){a=a.slice();for(var i=a.length-1;i>0;i--){var j=Math.floor(Math.random()*(i+1));var t=a[i];a[i]=a[j];a[j]=t}return a}
+function dkey(d){d=d||new Date();return d.getFullYear()+'-'+String(d.getMonth()+1).padStart(2,'0')+'-'+String(d.getDate()).padStart(2,'0')}
+function norm(s){return String(s||'').toLowerCase().replace(/[‘’]/g,"'").replace(/[.,!?;:"]/g,' ').replace(/\s+/g,' ').trim()}
+function sentencesOf(t){return (String(t||'').match(/[^.!?\n]+[.!?]*/g)||[]).map(function(x){return x.trim()}).filter(function(x){return /[A-Za-z]/.test(x)})}
+
+var IC={
+  listen:'<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 9v6h4l5 4V5L8 9z"/><path d="M16 9a4 4 0 0 1 0 6M18.5 6.5a8 8 0 0 1 0 11"/></svg>',
+  mic:'<svg viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5 11a7 7 0 0 0 14 0M12 18v3"/></svg>'
+};
+
+function say(text){
+  try{
+    var ss=window.speechSynthesis; if(!ss||!text) return;
+    ss.cancel();
+    var u=new SpeechSynthesisUtterance(text); u.lang='en-US'; u.rate=0.9;
+    var vs=ss.getVoices();
+    var v=vs.filter(function(x){return /^en[-_]US/i.test(x.lang)})[0]||vs.filter(function(x){return /^en/i.test(x.lang)})[0];
+    if(v) u.voice=v;
+    ss.speak(u);
+  }catch(e){}
+}
+
+/* ---------- lesson data ---------- */
+function Pat(id,name,formula,rule,rows){
+  return {id:id,name:name,formula:formula,rule:rule,items:rows.map(function(r){return {pid:id,bn:r[0],en:r[1],x:r[2]||[],alt:r[3]||[]}})};
+}
+var PATTERNS=[
+Pat('daily','Everyday questions','Question word + helper verb + who + verb',
+ 'These are the questions people really ask each day. Learn each one as a whole chunk, then answer it with a full sentence: How are you? I am fine, thank you. Where are you going? I am going to the office.',[
+ ['তুমি কেমন আছো?','How are you?',['do']],
+ ['তুমি কোথায় যাচ্ছ?','Where are you going?',['do']],
+ ['কতক্ষণ লাগবে?','How long will it take?',['does']],
+ ['তুমি কি গতকাল এখানে ছিলে?','Were you here yesterday?',['did']],
+ ['তুমি কখন ফিরবে?','When will you be back?',['are']],
+ ['তুমি এখন কী করছ?','What are you doing now?',['do']]]),
+Pat('be','I am / He is / We are','who + am / is / are + word',
+ 'Use am, is or are to say who or what something is, or how it feels. I goes with am. He, she, it and one person or thing go with is. We, you, they and many people or things go with are.',[
+ ['আমি ক্লান্ত।','I am tired.',['is']],
+ ['আমার ভাই ডাক্তার।','My brother is a doctor.',['are']],
+ ['আমরা অফিসে আছি।','We are at the office.',['is']],
+ ['তুমি খুব ভালো।','You are very good.',['is']],
+ ['আজ আবহাওয়া গরম।','The weather is hot today.',['are']],
+ ['তারা আমার সহকর্মী।','They are my colleagues.',['is']]]),
+Pat('simple','I go / She goes (daily life)','who + verb (+ s for he / she / it) + place or time',
+ 'Use the base verb for habits and daily life. With he, she, it or one person, add s: she works, he goes. Time words like every day and in the morning usually go at the end.',[
+ ['আমি প্রতিদিন অফিসে যাই।','I go to the office every day.',['goes'],['I go to office every day.']],
+ ['আমি সকালে চা খাই।','I drink tea in the morning.',['drinks']],
+ ['আমার বোন রাতে দেরিতে ঘুমায়।','My sister sleeps late at night.',['sleep']],
+ ['আমরা সন্ধ্যায় ফুটবল খেলি।','We play football in the evening.',['plays']],
+ ['আমি নেটওয়ার্ক নিয়ে কাজ করি।','I work with networks.',['works']],
+ ['আমার বাবা সকালে পত্রিকা পড়েন।','My father reads the newspaper in the morning.',['read']]]),
+Pat('cont','I am working (right now)','who + am / is / are + verb-ing',
+ 'Use this for things happening now or around now. Keep am, is or are before the -ing word. Do not say I working. Say I am working.',[
+ ['আমি এখন কাজ করছি।','I am working now.',['work']],
+ ['আমার মা রান্না করছেন।','My mother is cooking.',['cook']],
+ ['আমরা বাসে যাচ্ছি।','We are going by bus.',['go']],
+ ['বাইরে বৃষ্টি হচ্ছে।','It is raining outside.',['rain']],
+ ['তারা মিটিং করছে।','They are having a meeting.',['have']],
+ ['আমি ইংরেজি শিখছি।','I am learning English.',['learn']]]),
+Pat('want','I want to / I need to','who + want / need + to + verb',
+ 'After want and need, use to and then the base verb. Do not add -ing or s to the verb after to. Say I want to go, not I want to going.',[
+ ['আমি ইংরেজিতে কথা বলতে চাই।','I want to speak English.',['speaking']],
+ ['আমার একটু বিশ্রাম নিতে হবে।','I need to rest.',['resting'],['I need to take a rest.']],
+ ['আমি একটা নতুন চাকরি পেতে চাই।','I want to get a new job.',['getting']],
+ ['আমাকে আজ একটা ফোন করতে হবে।','I need to make a phone call today.',['making'],['I need to make a call today.']],
+ ['আমি আজ বাইরে যেতে চাই না।',"I don't want to go out today.",['going'],['I do not want to go out today.']],
+ ['আমাদের আরও অনুশীলন করতে হবে।','We need to practice more.',['practicing']]]),
+Pat('have','I have / I don’t have','who + have / has + thing   (no: don’t have)',
+ 'Use have for things you own, or things you do not own. With he, she, it or one person, use has. To say no, use don’t have (doesn’t have for he, she, it).',[
+ ['আমার একটা ল্যাপটপ আছে।','I have a laptop.',['has']],
+ ['আমার কোনো ভাই নেই।',"I don't have a brother.",["doesn't"],['I do not have a brother.',"I don't have any brothers."]],
+ ['আমার আজ অনেক কাজ আছে।','I have a lot of work today.',['has']],
+ ['আমার বন্ধুর একটা নতুন ফোন আছে।','My friend has a new phone.',['have']],
+ ['আমাদের সময় নেই।',"We don't have time.",["doesn't"],['We do not have time.']],
+ ['আমার একটা প্রশ্ন আছে।','I have a question.',['has']]]),
+Pat('past','I went / I did not go (finished time)','who + past verb      who + did not + base verb',
+ 'Use the past form for things that are finished: yesterday, last week. Go becomes went, see becomes saw, wake becomes woke. After did not, go back to the base verb: I did not go.',[
+ ['আমি গতকাল অফিসে গিয়েছিলাম।','I went to the office yesterday.',['go']],
+ ['আমি গত রাতে সিনেমা দেখেছিলাম।','I watched a movie last night.',['watch']],
+ ['আমরা গত সপ্তাহে ঢাকায় ছিলাম।','We were in Dhaka last week.',['was']],
+ ['আমি আজ সকালে দেরিতে উঠেছি।','I woke up late this morning.',['wake']],
+ ['আমার ভাই গতকাল আসেনি।','My brother did not come yesterday.',['comes'],["My brother didn't come yesterday."]],
+ ['আমি তাকে ফোন করিনি।','I did not call him.',['called'],["I didn't call him."]]]),
+Pat('future','I will go / I am going to go','who + will + verb      who + am / is / are going to + verb',
+ 'Use will for quick decisions and promises. Use am, is or are going to for plans. The verb after will stays in its base form: I will go, not I will going.',[
+ ['আমি কাল অফিসে যাব।','I will go to the office tomorrow.',['going']],
+ ['আমি আজ রাতে বই পড়ব।','I will read a book tonight.',['reading']],
+ ['আমরা আগামী সপ্তাহে ঘুরতে যাচ্ছি।','We are going to travel next week.',['will']],
+ ['আমি তোমাকে পরে ফোন করব।','I will call you later.',['called']],
+ ['আজ বৃষ্টি হবে।','It is going to rain today.',['will'],['It will rain today.']],
+ ['আমি একটা নতুন কোর্স করব।','I am going to take a new course.',['will']]]),
+Pat('ask','Questions','Do / Does / Did / Can + who + verb ?      Where / What / When + do / does / did + who + verb ?',
+ 'To ask a question, put do, does, did or can before the person. Then use the base verb. Start with where, what or when to ask for details. Use does for he, she, it or one person.',[
+ ['তুমি কি চা খাও?','Do you drink tea?',['does']],
+ ['তুমি কোথায় থাকো?','Where do you live?',['does']],
+ ['তুমি গতকাল কী করেছিলে?','What did you do yesterday?',['does']],
+ ['তুমি কি আমাকে সাহায্য করতে পারবে?','Can you help me?',['helps']],
+ ['তুমি কখন কাজ শেষ করো?','When do you finish work?',['does']],
+ ['তোমার ভাই কোথায় কাজ করে?','Where does your brother work?',['do']]]),
+Pat('join','Because / but / and / so','sentence 1 + because / but / and / so + sentence 2',
+ 'Join two short sentences with a joining word. Because gives a reason. But shows a difference. And adds more. So shows a result. You can build long sentences from short ones you already know.',[
+ ['আমি ক্লান্ত কারণ আমি অনেক কাজ করেছি।','I am tired because I worked a lot.',['so']],
+ ['আমি যেতে চাই কিন্তু আমার সময় নেই।',"I want to go but I don't have time.",['because'],['I want to go but I do not have time.']],
+ ['আমি অফিসে গেলাম এবং কাজ শুরু করলাম।','I went to the office and started work.',['but']],
+ ['বৃষ্টি হচ্ছে তাই আমি বাসায় আছি।','It is raining so I am at home.',['because']],
+ ['আমি চা খাই কিন্তু কফি খাই না।',"I drink tea but I don't drink coffee.",['and'],['I drink tea but I do not drink coffee.']],
+ ['আমি ইংরেজি শিখছি কারণ আমি ভালো চাকরি চাই।','I am learning English because I want a good job.',['so']]])
+];
+var ALL_ITEMS=[];PATTERNS.forEach(function(p){ALL_ITEMS=ALL_ITEMS.concat(p.items)});
+var PROPER={'Dhaka':1,'English':1,'I':1};
+
+var TOPICS=['My day','Work and office','Family and friends','Food and cooking','Travel and places','Technology and the internet','Money and shopping','Free talk (any topic)'];
+var SCENARIOS=[
+ {name:'Meeting a friend',setup:'You meet a friend you have not seen for a while.',qs:['How are you?','How is everything?','What are you up to these days?','How is your family?','Where are you going?']},
+ {name:'At the office',setup:'You are a colleague at the office in the morning.',qs:['Good morning, how are you?','Did you come by bus?','How long did it take?','What are you working on today?','Were you here yesterday?']},
+ {name:'Plans for today',setup:'A friend asks about your plans for today.',qs:['Where are you going now?','When will you be back?','How long will it take?','Who are you going with?','What time will you leave?']},
+ {name:'Yesterday and last week',setup:'A friend asks what you did recently.',qs:['Were you here yesterday?','Where did you go?','What did you do?','How was it?','Who did you meet?']},
+ {name:'On the phone',setup:'A friend phones you.',qs:['Hello, can you talk now?','Where are you?','What are you doing?','When can we meet?','How long will you be?']},
+ {name:'Asking the way',setup:'You are in a city and need directions.',qs:['Excuse me, where is the bus stop?','How far is it?','How long does it take to walk?','Can you tell me the way?','Which bus should I take?']},
+ {name:'Food and eating out',setup:'You are at a restaurant with a friend.',qs:['What would you like to eat?','Are you hungry?','Do you want tea or coffee?','How was the food?','Can I have the bill?']},
+ {name:'Shopping',setup:'You are in a shop and Sam is the shopkeeper.',qs:['How can I help you?','How much is this?','Do you have a smaller size?','Can you give a discount?','Will you pay cash or card?']},
+ {name:'Meeting someone new',setup:'You meet a new person for the first time.',qs:['What is your name?','Where are you from?','What do you do?','How long have you lived here?','Do you have any hobbies?']},
+ {name:'Feeling tired',setup:'A friend sees that you look tired.',qs:['How do you feel today?','Did you sleep well?','What happened?','Do you need anything?','Do you want to sit down?']}
+];
+function scnOf(n){return SCENARIOS.filter(function(s){return s.name===n})[0]}
+var PROMPTS=['Describe your morning routine.','What did you do yesterday?','Write about your family.','What do you do at your office?','What food do you like? Why?','Describe your best friend.','What are your plans for next weekend?','Write about the place where you live.','Why do you want to improve your English?','Describe your favorite day of the week.','Write about something you bought recently.','What problem did you solve at work this week?','Write about a place you want to visit.','What do you do to relax after work?'];
+var STARTER=[['borrow','to take something for a short time'],['arrive','to reach a place'],['decide','to choose'],['improve','to get better'],['forget','to not remember'],['expensive','costs a lot of money'],['ready','prepared'],['busy','having a lot to do']];
+var GOAL={build:10,write:3,speak:10};
+
+/* ---------- state ---------- */
+var LS='sentencegym:v1';
+function defaults(){return {v:1,updated:0,days:{},pat:{},words:STARTER.map(function(w){return {id:uid(),w:w[0],m:w[1],starter:true}}),mistakes:[]}}
+function loadState(){try{var r=localStorage.getItem(LS);if(r){var o=JSON.parse(r);if(o&&o.v===1){var d=defaults();for(var k in o)d[k]=o[k];return d}}}catch(e){}return defaults()}
+var S=loadState();
+var dbDoc=null,dbBusy=false,dbDirty=false,saveT=null;
+function save(){
+  S.updated=Date.now();
+  try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}
+  clearTimeout(saveT);saveT=setTimeout(pushDb,900);
+}
+function pushDb(){
+  if(!dbDoc) return;
+  if(dbBusy){dbDirty=true;return}
+  dbBusy=true;dbDirty=false;
+  dbDoc.set({s:JSON.parse(JSON.stringify(S))}).catch(function(){}).then(function(){dbBusy=false;if(dbDirty)pushDb()});
+}
+(function initDb(){
+  (async function(){
+    try{
+      if(!window.claude||!window.claude.use) return;
+      var db=await window.claude.use('db'), user=await window.claude.use('user');
+      if(!db||!user) return;
+      var id=await user.id(); if(!id) return;
+      dbDoc=db.doc('data/users/'+id+'/progress');
+      var snap=await dbDoc.get();
+      if(snap.exists){
+        var d=snap.data();
+        if(d&&d.s&&d.s.v===1&&(d.s.updated||0)>S.updated){
+          var n=defaults();for(var k in d.s)n[k]=d.s[k];S=n;
+          try{localStorage.setItem(LS,JSON.stringify(S))}catch(e){}
+          updateStreak();
+          if(!(SP.phase==='live')) render(view);
+        }
+      }else if(S.updated){pushDb()}
+    }catch(e){}
+  })();
+})();
+
+function day(k){k=k||dkey();return S.days[k]||(S.days[k]={bt:0,bc:0,w:0,wc:0,sp:0,sec:0})}
+function dnum(k){var p=k.split('-').map(Number);return Math.round(Date.UTC(p[0],p[1]-1,p[2])/86400000)}
+function isActive(d){return !!d&&(d.bt>0||d.w>0||d.sp>0||d.sec>=60)}
+function streakInfo(){
+  var set={};Object.keys(S.days).forEach(function(k){if(isActive(S.days[k]))set[dnum(k)]=1});
+  var today=dnum(dkey()),c=set[today]?today:today-1,cur=0;
+  while(set[c]){cur++;c--}
+  var nums=Object.keys(set).map(Number).sort(function(a,b){return a-b}),best=0,run=0,prev=null;
+  nums.forEach(function(n){run=(prev!==null&&n===prev+1)?run+1:1;if(run>best)best=run;prev=n});
+  return {cur:cur,best:best,todayDone:!!set[today]};
+}
+function updateStreak(){
+  var s=streakInfo(),el=$('#streak');
+  el.innerHTML=s.cur>0?'<b>'+s.cur+'</b> day streak':'Start your streak';
+}
+function recBuild(pid,ok){
+  var d=day();d.bt++;if(ok)d.bc++;
+  var p=S.pat[pid]||(S.pat[pid]={a:0,c:0});p.a++;if(ok)p.c++;
+  save();updateStreak();
+}
+function addMistake(wrong,right,why,src){
+  wrong=String(wrong||'').trim();right=String(right||'').trim();
+  if(!wrong||!right||norm(wrong)===norm(right)) return;
+  var exists=S.mistakes.some(function(m){return norm(m.wrong)===norm(wrong)&&norm(m.right)===norm(right)});
+  if(exists) return;
+  S.mistakes.unshift({id:uid(),wrong:wrong,right:right,why:String(why||''),src:src,date:dkey()});
+  if(S.mistakes.length>40)S.mistakes.length=40;
+  save();
+}
+
+/* ---------- Claude (sample) ---------- */
+var samplePromise=null;
+function getSample(){
+  if(!samplePromise)samplePromise=(async function(){try{if(!window.claude||!window.claude.use)return null;return await window.claude.use('sample')}catch(e){return null}})();
+  return samplePromise;
+}
+async function askText(input,opts){var s=await getSample();if(!s)throw {code:'unavailable'};var r=await s(input,Object.assign({cache:false},opts||{}));return r.text}
+async function askJSON(input,opts){var s=await getSample();if(!s)throw {code:'unavailable'};return s.json(input,Object.assign({cache:false},opts||{}))}
+function errCopy(e){
+  var c=e&&e.code;
+  if(c==='not_granted')return 'Claude feedback is turned off for this page. You can still practice without it.';
+  if(c==='unavailable'||c==='sampling_disabled'||c==='not_declared'||c==='capability_disabled'||c==='capability_removed')return 'Claude feedback is not available in this view.';
+  if(c==='rate_limited')return 'Too many requests right now. Wait a minute, then try again.';
+  if(c==='session_expired')return 'Please sign in again, then try once more.';
+  return 'Something went wrong. Please try again.';
+}
+var LEARNER='The learner is a Bangladeshi adult at about A2 English level. He understands English and knows many words, but finds it hard to build sentences. Use simple words and short sentences. Be kind and specific.';
+
+async function checkWriting(text,focus){
+  var list=sentencesOf(text).slice(0,12);
+  var prompt='You are an English teacher. '+LEARNER+'\n'+(focus?focus+'\n':'')+
+   'Check each sentence below. Keep the learner\'s meaning. If a sentence is already correct and natural, set ok to true and repeat it in "corrected". Do not fix capital letters or punctuation unless the sentence is hard to read.\n'+
+   'Reply with only JSON like {"items":[{"original":"...","corrected":"...","ok":true,"why":""}],"tip":"..."}\n'+
+   '"why" is one short sentence in plain English that explains the fix (empty when ok). "tip" is one short tip for the next practice.\nSentences:\n'+
+   list.map(function(s,i){return (i+1)+'. '+s}).join('\n');
+  var r=await askJSON(prompt,{modelTier:'default'});
+  if(!r||!Array.isArray(r.items)||!r.items.length) throw {code:'invalid_json'};
+  r.items=r.items.map(function(it,i){return {original:String(it.original||list[i]||''),corrected:String(it.corrected||it.original||''),ok:!!it.ok,why:String(it.why||'')}});
+  return r;
+}
+function recWriting(r,src){
+  var d=day(),good=0;
+  r.items.forEach(function(it){d.w++;if(it.ok){d.wc++;good++}else addMistake(it.original,it.corrected,it.why,src)});
+  save();updateStreak();return good;
+}
+function feedbackHTML(r,good){
+  return '<div class="fblist">'+r.items.map(function(it){
+    return it.ok
+     ?'<div class="fbi good"><span class="tag">Good</span>'+esc(it.corrected||it.original)+'</div>'
+     :'<div class="fbi fix"><div class="was">'+esc(it.original)+'</div><div class="now"><span class="tag">Better</span>'+esc(it.corrected)+'</div>'+(it.why?'<div class="why">'+esc(it.why)+'</div>':'')+'</div>';
+  }).join('')+'</div>'+(r.tip?'<p class="tipline"><strong>Next time:</strong> '+esc(r.tip)+'</p>':'')+'<p class="small">'+good+' of '+r.items.length+' sentences were correct.</p>';
+}
+
+/* ---------- navigation ---------- */
+var view='practice';
+var VIEWS=['practice','speak','write','words','progress'];
+function render(v){({practice:renderPractice,speak:renderSpeak,write:renderWrite,words:renderWords,progress:renderProgress})[v]()}
+function show(v){
+  view=v;
+  VIEWS.forEach(function(n){$('#v-'+n).hidden=(n!==v)});
+  $$('#nav button').forEach(function(b){b.setAttribute('aria-current',b.dataset.view===v?'page':'false')});
+  render(v);window.scrollTo(0,0);
+}
+
+/* ---------- PRACTICE ---------- */
+var P={sub:'lessons',lesson:null,ylText:'',ylOut:''};
+var B={pid:'all',mode:'tiles',started:false,done:false,queue:[],i:0,pool:[],placed:[],state:'idle',tried:false,results:[],typed:'',why:'',mine:''};
+
+function mastery(pid){var p=S.pat[pid];return(!p||!p.a)?null:Math.round(100*p.c/p.a)}
+function tokensOf(en){return en.replace(/[.?!]$/,'').split(/\s+/)}
+function tileLabel(t,i){return(i===0&&!PROPER[t])?t.toLowerCase():t}
+function setupItem(){
+  var it=B.queue[B.i],toks=tokensOf(it.en),n=0;
+  var all=toks.map(function(t,i){return {id:n++,t:tileLabel(t,i)}}).concat((it.x||[]).map(function(t){return {id:n++,t:t}}));
+  B.pool=shuffle(all);B.placed=[];B.state='idle';B.tried=false;B.typed='';B.why='';B.mine='';
+}
+function startBuild(pid,mode){
+  B.pid=pid;B.mode=mode;B.started=true;B.done=false;B.results=[];B.i=0;
+  var items=pid==='all'?shuffle(ALL_ITEMS).slice(0,8):shuffle(PATTERNS.filter(function(p){return p.id===pid})[0].items);
+  B.queue=items;setupItem();
+}
+function accepted(it){return [it.en].concat(it.alt||[]).map(norm)}
+function checkBuild(){
+  var it=B.queue[B.i],mine;
+  if(B.mode==='tiles'){
+    if(!B.placed.length)return;
+    mine=B.placed.map(function(id){return B.pool.filter(function(p){return p.id===id})[0].t}).join(' ');
+  }else{
+    mine=String(B.typed||'').trim();if(!mine)return;
+  }
+  B.mine=mine;
+  var ok=accepted(it).indexOf(norm(mine))>-1;
+  if(!B.tried){B.tried=true;B.results.push(ok)}
+  recBuild(it.pid,ok);
+  B.state=ok?'right':'wrong';B.why='';
+  renderPractice();
+}
+function diffHTML(mine,correct){
+  var a=norm(mine).split(' '),b=norm(correct).split(' ');
+  return a.map(function(w,i){return w===b[i]?esc(w):'<mark class="bad">'+esc(w)+'</mark>'}).join(' ');
+}
+function patOf(pid){return PATTERNS.filter(function(p){return p.id===pid})[0]}
+
+function renderPractice(){
+  var el=$('#v-practice');
+  var seg='<div class="seg" role="group" aria-label="Practice type"><button data-act="sub" data-sub="lessons" class="'+(P.sub==='lessons'?'on':'')+'">Patterns</button><button data-act="sub" data-sub="build" class="'+(P.sub==='build'?'on':'')+'">Build sentences</button></div>';
+  el.innerHTML=seg+(P.sub==='lessons'?(P.lesson?lessonHTML():lessonsListHTML()):buildHTML());
+  if(P.sub==='lessons'&&P.lesson){var yt=$('#yt');if(yt)yt.value=P.ylText;var yo=$('#ylOut');if(yo)yo.innerHTML=P.ylOut}
+  if(P.sub==='build'&&B.started&&!B.done&&B.mode==='type'){var t=$('#typed');if(t){t.value=B.typed;if(B.state==='idle')t.focus({preventScroll:true})}}
+}
+function lessonsListHTML(){
+  return '<h1 class="h1">Learn a pattern</h1><p class="lede">A pattern is a frame you can reuse. Learn the frame, then fill it with words you already know.</p><div class="list">'+
+  PATTERNS.map(function(p){var m=mastery(p.id);
+    return '<button class="row" data-act="openLesson" data-id="'+p.id+'"><span class="row-main"><span class="row-title">'+esc(p.name)+'</span><span class="mono">'+esc(p.formula)+'</span></span><span class="badge'+(m===null?'':' has')+'">'+(m===null?'New':m+'%')+'</span></button>';
+  }).join('')+'</div>';
+}
+function lessonHTML(){
+  var p=patOf(P.lesson);
+  return '<button class="back" data-act="lessonBack">← All patterns</button>'+
+  '<h1 class="h1">'+esc(p.name)+'</h1>'+
+  '<p class="formula mono">'+esc(p.formula)+'</p>'+
+  '<p class="rule">'+esc(p.rule)+'</p>'+
+  '<h2 class="h2">Examples</h2><ul class="ex">'+p.items.map(function(it){
+    return '<li><div><div class="en">'+esc(it.en)+'</div><div class="bn" lang="bn">'+esc(it.bn)+'</div></div><button class="icon" data-act="say" data-t="'+esc(it.en)+'" aria-label="Listen: '+esc(it.en)+'">'+IC.listen+'</button></li>';
+  }).join('')+'</ul>'+
+  '<div class="actions"><button class="btn" data-act="buildThis" data-id="'+p.id+'" data-mode="tiles">Build these sentences</button><button class="btn ghost" data-act="buildThis" data-id="'+p.id+'" data-mode="type">Type them</button></div>'+
+  '<h2 class="h2">Your turn</h2><p class="lede">Write 3 sentences about your own life with this pattern.</p>'+
+  '<textarea id="yt" class="ta" rows="4" placeholder="For example: '+esc(p.items[0].en)+'"></textarea>'+
+  '<div class="actions"><button class="btn" data-act="checkLesson" data-id="'+p.id+'">Check my sentences</button></div>'+
+  '<div id="ylOut" aria-live="polite"></div>';
+}
+function buildHTML(){
+  if(!B.started){
+    return '<h1 class="h1">Build sentences</h1><p class="lede">You see a sentence in Bangla. Put it into English. Start with tiles. When tiles feel easy, switch to typing.</p>'+
+    '<div class="label">Pattern</div><select id="bPat" class="sel" aria-label="Pattern">'+
+      '<option value="all"'+(B.pid==='all'?' selected':'')+'>Mixed patterns (8 sentences)</option>'+
+      PATTERNS.map(function(p){return '<option value="'+p.id+'"'+(B.pid===p.id?' selected':'')+'>'+esc(p.name)+'</option>'}).join('')+
+    '</select>'+
+    '<div class="label">How</div><div class="seg"><button data-act="setMode" data-mode="tiles" class="'+(B.mode==='tiles'?'on':'')+'">Tiles</button><button data-act="setMode" data-mode="type" class="'+(B.mode==='type'?'on':'')+'">Type it</button></div>'+
+    '<div class="actions"><button class="btn" data-act="startBuild">Start</button></div>';
+  }
+  if(B.done){
+    var good=B.results.filter(Boolean).length,n=B.results.length;
+    return '<h1 class="h1">Round done</h1><div class="stats"><div class="stat"><b>'+good+'/'+n+'</b><span>right on the first try</span></div></div>'+
+    '<p class="lede">'+(good===n?'Perfect round. Try the typing mode next.':good>=n*0.6?'Good work. The sentences you missed will come back in the next round.':'Keep going. Open the pattern lesson, read the rule once more, then try again.')+'</p>'+
+    '<div class="actions"><button class="btn" data-act="startBuild">Another round</button><button class="btn ghost" data-act="buildReset">Change pattern</button></div>';
+  }
+  var it=B.queue[B.i],pat=patOf(it.pid),h='';
+  h+='<div class="card"><div class="meta"><span class="tagchip">'+esc(pat.name)+'</span><span class="count">'+(B.i+1)+' of '+B.queue.length+'</span></div>';
+  h+='<div class="prog"><i style="width:'+Math.round(B.i/B.queue.length*100)+'%"></i></div>';
+  h+='<p class="bnbig" lang="bn">'+esc(it.bn)+'</p><p class="hint">Put this into English.</p>';
+  var locked=B.state==='right';
+  if(B.mode==='tiles'){
+    h+='<div class="answer" aria-label="Your sentence">'+(B.placed.length?B.placed.map(function(id){var t=B.pool.filter(function(p){return p.id===id})[0];return '<button class="tile" data-act="unplace" data-id="'+id+'"'+(locked?' disabled':'')+'>'+esc(t.t)+'</button>'}).join(''):'<span class="ph">Tap the words in order</span>')+'</div>';
+    h+='<div class="pool" aria-label="Word tiles">'+B.pool.filter(function(p){return B.placed.indexOf(p.id)<0}).map(function(p){return '<button class="tile" data-act="place" data-id="'+p.id+'"'+(locked?' disabled':'')+'>'+esc(p.t)+'</button>'}).join('')+'</div>';
+  }else{
+    h+='<textarea id="typed" class="ta" rows="2" placeholder="Type the English sentence" aria-label="Your English sentence"'+(locked?' disabled':'')+'></textarea>';
+  }
+  if(B.state==='idle'){
+    h+='<div class="actions"><button class="btn" data-act="checkBuild">Check</button>'+(B.mode==='tiles'?'<button class="btn ghost" data-act="clearTiles">Clear</button>':'')+'</div>';
+  }else if(B.state==='right'){
+    h+='<div class="fb good"><strong>Correct.</strong> <span class="line ok" style="font-size:19px">'+esc(it.en)+'</span> <button class="icon sm" data-act="say" data-t="'+esc(it.en)+'" aria-label="Listen">'+IC.listen+'</button></div>'+
+       '<div class="actions"><button class="btn" data-act="nextItem">'+(B.i+1>=B.queue.length?'Finish':'Next')+'</button></div>';
+  }else{
+    h+='<div class="fb bad"><div class="lbl">Your sentence</div><div class="line">'+diffHTML(B.mine,it.en)+'</div><div class="lbl">Model answer</div><div class="line ok">'+esc(it.en)+'</div><p class="small" style="margin:0">'+esc(pat.rule)+'</p></div>'+
+       '<div class="actions"><button class="btn ghost" data-act="retry">Try again</button><button class="btn ghost" data-act="why">Ask Claude</button><button class="btn" data-act="nextItem">'+(B.i+1>=B.queue.length?'Finish':'Next')+'</button></div><div id="why" aria-live="polite">'+(B.why?'<div class="why">'+esc(B.why)+'</div>':'')+'</div>';
+  }
+  h+='</div>';
+  return h;
+}
+
+/* ---------- SPEAK ---------- */
+var SP={phase:'setup',kind:'daily',topic:SCENARIOS[0].name,mins:20,voice:true,msgs:[],turns:[],fixes:[],draft:'',busy:false,startedAt:0,endAt:0,counted:0,tick:null,summary:null,summaryState:'',confirmEnd:false,userMsgs:0,note:''};
+var SR=window.SpeechRecognition||window.webkitSpeechRecognition;
+var rec=null,micOn=false;
+
+function dailyRules(){
+  var s=scnOf(SP.topic)||SCENARIOS[0];
+  return 'You are Sam, playing a real person in an everyday situation: '+s.setup+' '+LEARNER+'\nThis is a role-play of real daily conversation, the way friends and colleagues really talk.\nRules:\n- Ask short everyday questions, one at a time. Good questions for this situation: '+s.qs.join(' / ')+'\n- Wait for his answer, react naturally in a few words, then ask the next question or a natural follow-up.\n- Keep each message under 20 words. Use simple, common words and real spoken phrases, not textbook sentences.\n- If his answer has a mistake, or sounds unnatural, give a gentle fix with the natural version people really say. Fix at most one thing per turn.\n- If he seems stuck or writes Bangla, add a short Bangla help line in "bn" and one easy example answer in "hint".\n'+
+  'Reply with only JSON: {"reply":"your message","fix":null} or {"reply":"your message","fix":{"said":"his words","better":"the corrected sentence","why":"one short reason in plain English"}}. Add "bn" and "hint" only when he seems stuck.';
+}
+function rules(){
+  if(SP.kind==='daily')return dailyRules();
+  return 'You are Sam, a friendly English speaking partner. '+LEARNER+'\nTopic: '+SP.topic+'.\n'+
+  'Rules:\n- Speak simple English. Use short sentences (under 12 words) and common words.\n- Keep each reply to 1-3 sentences, then ask ONE easy question so he keeps talking.\n- If his last message has a grammar or word-order mistake, give a gentle fix. Ignore tiny things like capital letters or punctuation. Fix at most one mistake per turn, the most useful one.\n- If he seems lost or writes in Bangla, answer in very simple English and add a short Bangla help line in "bn".\n'+
+  'Reply with only JSON: {"reply":"your message","fix":null} or {"reply":"your message","fix":{"said":"his words","better":"the corrected sentence","why":"one short reason in plain English"}}. Add "bn" only when he seems lost.';
+}
+function renderSpeak(){
+  var el=$('#v-speak'),h='';
+  if(SP.phase==='setup'){
+    var sc=scnOf(SP.topic);
+    h='<h1 class="h1">Speaking partner</h1><p class="lede">Talk with Sam, one to one, for up to 20 minutes. Practice the real conversations of daily life, or pick any topic. Sam uses simple English and gently fixes one mistake at a time.</p>'+
+    '<div class="label">Daily life conversations</div><div class="chips">'+SCENARIOS.map(function(s){return '<button class="chip'+(SP.kind==='daily'&&s.name===SP.topic?' on':'')+'" data-act="topic" data-kind="daily" data-t="'+esc(s.name)+'">'+esc(s.name)+'</button>'}).join('')+'</div>'+
+    (SP.kind==='daily'&&sc?'<p class="small" style="margin:14px 0 4px">Sam may ask you things like:</p><ul class="ex">'+sc.qs.map(function(q){return '<li><div class="en" style="font-size:17px">'+esc(q)+'</div><button class="icon sm" data-act="say" data-t="'+esc(q)+'" aria-label="Listen: '+esc(q)+'">'+IC.listen+'</button></li>'}).join('')+'</ul>':'')+
+    '<div class="label">Or talk about a topic</div><div class="chips">'+TOPICS.map(function(t){return '<button class="chip'+(SP.kind==='topic'&&t===SP.topic?' on':'')+'" data-act="topic" data-kind="topic" data-t="'+esc(t)+'">'+esc(t)+'</button>'}).join('')+'</div>'+
+    '<div class="label">Length</div><div class="seg">'+[5,10,20].map(function(m){return '<button data-act="mins" data-m="'+m+'" class="'+(SP.mins===m?'on':'')+'">'+m+' min</button>'}).join('')+'</div>'+
+    '<label class="check"><input type="checkbox" id="voiceOn"'+(SP.voice?' checked':'')+'> Read Sam’s replies aloud</label>'+
+    '<div class="actions"><button class="btn" data-act="startSpeak">Start talking</button></div>'+
+    '<p class="note">'+(SR?'Tap the microphone to speak. Your words appear as text first, so you can check them before sending. If the microphone is blocked in this view, type your answers instead.':'Voice input is not supported in this browser, so type your answers. Sam’s replies can still be read aloud.')+'</p>';
+  }else if(SP.phase==='live'){
+    h='<div class="timer"><div><span class="t-label">Time left</span><span class="clock" id="clock">--:--</span></div><button class="btn ghost sm" id="endBtn" data-act="endSpeak">'+(SP.confirmEnd?'Tap again to end':'End session')+'</button></div>'+
+    '<div class="prog"><i id="tbar" style="width:0%"></i></div>'+
+    '<div class="small">'+(SP.kind==='daily'?'Situation: ':'Topic: ')+esc(SP.topic)+'</div>'+
+    '<div id="msgs" class="msgs" aria-live="polite"></div>'+
+    '<div class="composer"><textarea id="spIn" class="ta" rows="2" placeholder="Type, or tap the microphone" aria-label="Your message"></textarea><div class="cbtns"><button class="icon" id="micBtn" data-act="mic" aria-label="Speak">'+IC.mic+'</button><button class="btn" data-act="sendSpeak">Send</button></div></div>'+
+    '<div class="actions" style="margin:8px 0 0"><button class="btn quiet sm" data-act="helpSpeak">I do not know what to say</button></div>'+
+    '<div id="spNote" class="note"></div>';
+  }else{
+    h=summaryHTML();
+  }
+  el.innerHTML=h;
+  if(SP.phase==='live'){
+    var i=$('#spIn');if(i)i.value=SP.draft;
+    drawMsgs();tickUpdate();
+    var n=$('#spNote');if(n)n.textContent=SP.note;
+  }
+}
+function msgHTML(m){
+  if(m.role==='a')return '<div class="msg a"><div class="bub">'+esc(m.text)+(m.bn?'<div class="bnhelp" lang="bn">'+esc(m.bn)+'</div>':'')+(m.hint?'<div class="small" style="margin-top:6px">You could say: <strong>'+esc(m.hint)+'</strong></div>':'')+'</div><button class="icon sm" data-act="say" data-t="'+esc(m.text)+'" aria-label="Listen">'+IC.listen+'</button></div>';
+  if(m.role==='me')return '<div class="msg u"><div class="bub">'+esc(m.text)+'</div>'+(m.fix?'<div class="fix"><span class="lbl">Better</span><span class="ok">'+esc(m.fix.better)+'</span>'+(m.fix.why?'<span class="why">'+esc(m.fix.why)+'</span>':'')+'</div>':'')+'</div>';
+  return '<div class="sysmsg"><span>'+esc(m.text)+'</span>'+(m.retry?'<button class="btn ghost sm" data-act="retryReply">Try again</button>':'')+'</div>';
+}
+function drawMsgs(){
+  var el=$('#msgs');if(!el)return;
+  el.innerHTML=SP.msgs.map(msgHTML).join('')+(SP.busy?'<div class="msg a"><div class="bub small">Sam is typing…</div></div>':'');
+  el.scrollTop=el.scrollHeight;
+}
+function tickUpdate(){
+  var rem=Math.max(0,SP.endAt-Date.now()),s=Math.ceil(rem/1000);
+  var c=$('#clock');if(c)c.textContent=String(Math.floor(s/60)).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
+  var b=$('#tbar');if(b)b.style.width=Math.min(100,Math.round((1-rem/(SP.mins*60000))*100))+'%';
+}
+function startTick(){
+  clearInterval(SP.tick);
+  SP.tick=setInterval(function(){
+    if(SP.phase!=='live')return;
+    tickUpdate();
+    var el=Math.floor((Date.now()-SP.startedAt)/1000);
+    if(el-SP.counted>=30){day().sec+=30;SP.counted+=30;save();updateStreak()}
+    if(Date.now()>=SP.endAt)endSpeak(true);
+  },1000);
+}
+async function startSpeak(){
+  SP.phase='live';SP.msgs=[];SP.fixes=[];SP.userMsgs=0;SP.counted=0;SP.draft='';SP.summary=null;SP.summaryState='';SP.note='';SP.confirmEnd=false;
+  SP.turns=[{role:'user',content:rules()+(SP.kind==='daily'?'\n\nStart now: greet him naturally, the way a real person would in this situation, and ask your first question.':'\n\nStart now: greet him in one short sentence and ask your first easy question about the topic.')}];
+  SP.startedAt=Date.now();SP.endAt=SP.startedAt+SP.mins*60000;
+  renderSpeak();startTick();
+  await getReply();
+}
+async function getReply(){
+  SP.busy=true;
+  SP.msgs=SP.msgs.filter(function(m){return !m.retry});
+  drawMsgs();
+  try{
+    var r=await askJSON(SP.turns,{modelTier:'quick'});
+    var reply=r&&typeof r.reply==='string'?r.reply.trim():'';
+    if(!reply)throw {code:'invalid_json'};
+    var fix=null;
+    if(r.fix&&typeof r.fix.better==='string'&&r.fix.better.trim()&&norm(r.fix.better)!==norm(r.fix.said)){
+      fix={said:String(r.fix.said||''),better:r.fix.better.trim(),why:String(r.fix.why||'')};
+    }
+    SP.turns.push({role:'assistant',content:JSON.stringify({reply:reply,fix:fix})});
+    if(fix){
+      var last=null;for(var i=SP.msgs.length-1;i>=0;i--){if(SP.msgs[i].role==='me'){last=SP.msgs[i];break}}
+      if(last){last.fix=fix;SP.fixes.push(fix);addMistake(fix.said||last.text,fix.better,fix.why,'speak')}
+    }
+    SP.msgs.push({role:'a',text:reply,bn:r.bn?String(r.bn):'',hint:r.hint?String(r.hint):''});
+    SP.busy=false;
+    if(SP.phase==='live'){drawMsgs();if(SP.voice)say(reply)}
+  }catch(e){
+    SP.busy=false;
+    if(e&&e.code==='cancelled')return;
+    SP.msgs.push({role:'sys',text:'Sam could not reply. '+errCopy(e),retry:true});
+    if(SP.phase==='live')drawMsgs();
+  }
+}
+async function helpSpeak(){
+  if(SP.busy||SP.phase!=='live')return;
+  SP.turns.push({role:'user',content:'The learner does not know how to answer your last question. Ask the same question again in simpler words, and put one easy example answer in "hint" and a short Bangla help line in "bn". Set "fix" to null. Reply with only the JSON described at the start.'});
+  await getReply();
+}
+async function sendSpeak(){
+  if(SP.busy||SP.phase!=='live')return;
+  var inp=$('#spIn'),text=String(inp?inp.value:SP.draft).trim();
+  if(!text)return;
+  stopMic();
+  if(inp)inp.value='';SP.draft='';SP.note='';
+  var n=$('#spNote');if(n)n.textContent='';
+  SP.msgs.push({role:'me',text:text});
+  SP.turns.push({role:'user',content:'Learner says: "'+text.replace(/"/g,"'")+'"\n(Reply with only the JSON described at the start.)'});
+  SP.userMsgs++;day().sp++;save();updateStreak();
+  await getReply();
+}
+function setMic(on){var b=$('#micBtn');if(b){b.classList.toggle('on',on);b.setAttribute('aria-label',on?'Stop listening':'Speak')}}
+function stopMic(){try{if(rec&&micOn)rec.stop()}catch(e){}}
+function noteSet(t){SP.note=t;var n=$('#spNote');if(n)n.textContent=t}
+function micToggle(){
+  var inp=$('#spIn');if(!inp)return;
+  if(!SR){noteSet('Voice input is not supported in this browser. Type your answer instead.');return}
+  if(micOn){stopMic();return}
+  try{
+    rec=new SR();rec.lang='en-US';rec.interimResults=true;rec.continuous=false;
+    var base=inp.value.trim()?inp.value.trim()+' ':'';
+    rec.onstart=function(){micOn=true;setMic(true);noteSet('Listening. Speak now.')};
+    rec.onresult=function(e){var t='';for(var i=0;i<e.results.length;i++)t+=e.results[i][0].transcript;var f=$('#spIn');if(f){f.value=base+t;SP.draft=f.value}};
+    rec.onerror=function(e){
+      var c=e&&e.error;
+      noteSet((c==='not-allowed'||c==='service-not-allowed')?'The microphone is blocked in this view. Type your answer, or open this page in a full browser tab and allow the microphone.':c==='no-speech'?'I did not hear anything. Tap the microphone and try again.':'Voice input stopped. You can type instead.');
+    };
+    rec.onend=function(){micOn=false;setMic(false);if(SP.note==='Listening. Speak now.')noteSet('Check the text, fix anything wrong, then press Send.')};
+    rec.start();
+  }catch(err){micOn=false;noteSet('Voice input could not start. Type your answer instead.')}
+}
+async function endSpeak(auto){
+  if(SP.phase!=='live')return;
+  clearInterval(SP.tick);stopMic();
+  try{window.speechSynthesis&&window.speechSynthesis.cancel()}catch(e){}
+  var elapsed=Math.min(SP.mins*60,Math.round((Date.now()-SP.startedAt)/1000));
+  var d=day();d.sec+=Math.max(0,elapsed-SP.counted);SP.counted=elapsed;
+  SP.elapsed=elapsed;SP.auto=!!auto;save();updateStreak();
+  SP.phase='summary';SP.summary=null;
+  SP.summaryState=SP.userMsgs>0?'loading':'empty';
+  renderSpeak();
+  if(SP.userMsgs>0){
+    var tr=SP.msgs.filter(function(m){return m.role==='a'||m.role==='me'}).map(function(m){return (m.role==='a'?'Sam: ':'Learner: ')+m.text}).join('\n').slice(0,12000);
+    var prompt='Here is an English practice chat between a learner and Sam. '+LEARNER+'\nWrite a short end-of-session report for the learner in simple English.\nReply with only JSON: {"summary":"two short sentences about how he did","good":["up to 3 things he did well"],"fixes":[{"wrong":"his words","right":"corrected","why":"short reason"}],"phrases":["up to 4 useful natural phrases he can reuse"],"next":"one thing to practice next time"}\nUse at most 4 fixes, taken from the Learner lines only.\n\n'+tr;
+    try{
+      var r=await askJSON(prompt,{modelTier:'default'});
+      SP.summary=r;SP.summaryState='ok';
+      (r.fixes||[]).forEach(function(f){addMistake(f.wrong,f.right,f.why,'speak')});
+    }catch(e){SP.summaryState='fail';SP.summaryErr=errCopy(e)}
+    if(SP.phase==='summary')renderSpeak();
+  }
+}
+function summaryHTML(){
+  var mins=Math.max(0,Math.round((SP.elapsed||0)/60)),h='<h1 class="h1">'+(SP.auto?'Time is up':'Session finished')+'</h1><div class="stats"><div class="stat"><b>'+mins+'</b><span>minutes talking</span></div><div class="stat"><b>'+SP.userMsgs+'</b><span>messages you sent</span></div><div class="stat"><b>'+SP.fixes.length+'</b><span>fixes from Sam</span></div></div><div class="sum">';
+  if(SP.summaryState==='loading')h+='<p class="lede">Sam is writing your report…</p>';
+  else if(SP.summaryState==='empty')h+='<p class="lede">You did not send any messages this time. Start again whenever you are ready.</p>';
+  else if(SP.summaryState==='fail'){
+    h+='<p class="lede">'+esc(SP.summaryErr||'The report could not be written.')+'</p>';
+    if(SP.fixes.length)h+='<h3>Fixes during the chat</h3><ul>'+SP.fixes.map(function(f){return '<li><span style="color:var(--warn);text-decoration:line-through">'+esc(f.said)+'</span> → <strong>'+esc(f.better)+'</strong></li>'}).join('')+'</ul>';
+  }else{
+    var r=SP.summary||{};
+    if(r.summary)h+='<p>'+esc(r.summary)+'</p>';
+    if(r.good&&r.good.length)h+='<h3>What went well</h3><ul>'+r.good.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>';
+    if(r.fixes&&r.fixes.length)h+='<h3>Fix these next time</h3><ul>'+r.fixes.map(function(f){return '<li><span style="color:var(--warn);text-decoration:line-through">'+esc(f.wrong)+'</span> → <strong>'+esc(f.right)+'</strong>'+(f.why?'<br><span class="small">'+esc(f.why)+'</span>':'')+'</li>'}).join('')+'</ul>';
+    if(r.phrases&&r.phrases.length)h+='<h3>Phrases to reuse</h3><ul>'+r.phrases.map(function(x){return '<li>'+esc(x)+'</li>'}).join('')+'</ul>';
+    if(r.next)h+='<h3>Practice next</h3><p style="margin:0">'+esc(r.next)+'</p>';
+  }
+  h+='</div><div class="actions"><button class="btn" data-act="speakAgain">Talk again</button><button class="btn ghost" data-act="nav" data-view="progress">See my progress</button></div>';
+  return h;
+}
+
+/* ---------- WRITE ---------- */
+var W={offset:0,out:'',busy:false};
+function todayPrompt(){
+  var d=new Date(),doy=Math.floor((d-new Date(d.getFullYear(),0,0))/86400000);
+  return PROMPTS[(doy+W.offset)%PROMPTS.length];
+}
+function getDraft(){try{return localStorage.getItem('sentencegym:draft')||''}catch(e){return ''}}
+function setDraft(t){try{localStorage.setItem('sentencegym:draft',t)}catch(e){}}
+function renderWrite(){
+  var el=$('#v-write');
+  el.innerHTML='<h1 class="h1">Daily writing</h1><p class="lede">Write 3 to 5 sentences. Short and simple is fine. Claude checks each sentence and shows a better version.</p>'+
+  '<div class="label">Today’s question</div><p class="pq">'+esc(todayPrompt())+'</p>'+
+  '<textarea id="wt" class="ta" rows="6" placeholder="Write here. One idea in each sentence." aria-label="Your writing"></textarea>'+
+  '<div class="cnt" id="wcount"></div>'+
+  '<div class="actions"><button class="btn" data-act="checkWrite" id="wBtn">Check my writing</button><button class="btn ghost" data-act="newPrompt">Another question</button></div>'+
+  '<div id="wOut" aria-live="polite">'+W.out+'</div>';
+  var t=$('#wt');t.value=getDraft();updateWCount();
+}
+function updateWCount(){var t=$('#wt'),c=$('#wcount');if(!t||!c)return;var n=sentencesOf(t.value).length;c.textContent=n+(n===1?' sentence':' sentences')+(n<3?' (aim for at least 3)':'')}
+
+/* ---------- WORDS ---------- */
+var WD={id:null,text:'',out:'',ex:''};
+function renderWords(){
+  var el=$('#v-words'),hasStarter=S.words.some(function(w){return w.starter}),cur=S.words.filter(function(w){return w.id===WD.id})[0];
+  var h='<h1 class="h1">Word bank</h1><p class="lede">Add words you already know. Then turn each one into a sentence of your own. That is how known words start working for you.</p>'+
+  '<div class="addrow"><input id="wIn" class="inp" placeholder="Word, or several separated by commas" autocomplete="off" aria-label="Word"><input id="mIn" class="inp" placeholder="Meaning (optional)" autocomplete="off" aria-label="Meaning"><button class="btn" data-act="addWord">Add</button></div>'+
+  '<div class="actions"><button class="btn ghost" data-act="randWord"'+(S.words.length?'':' disabled')+'>Practice a random word</button></div>';
+  if(cur){
+    h+='<div class="card"><div class="meta"><span class="tagchip">Make a sentence</span><button class="btn quiet sm" data-act="closeWord">Close</button></div><p class="pq" style="margin-bottom:4px">'+esc(cur.w)+'</p>'+(cur.m?'<p class="small" style="margin:0 0 10px">'+esc(cur.m)+'</p>':'')+
+    '<textarea id="wsent" class="ta" rows="2" placeholder="Write one sentence with “'+esc(cur.w)+'”" aria-label="Your sentence"></textarea>'+
+    '<div class="actions"><button class="btn" data-act="checkWord">Check</button><button class="btn ghost" data-act="exWord">Show examples</button></div><div id="wdOut" aria-live="polite">'+WD.out+'</div></div>';
+  }
+  h+='<h2 class="h2">Your words ('+S.words.length+')</h2>';
+  if(hasStarter)h+='<p class="note">Words marked Example are here to show how this works. Remove them whenever you like and add your own.</p>';
+  h+=S.words.length?'<div>'+S.words.map(function(w){
+    return '<div class="wrow"><div><span class="w">'+esc(w.w)+'</span>'+(w.starter?'<span class="ex-tag">Example</span>':'')+(w.m?'<div class="m">'+esc(w.m)+'</div>':'')+'</div><div class="btns"><button class="btn ghost sm" data-act="pickWord" data-id="'+w.id+'">Practice</button><button class="btn quiet sm" data-act="delWord" data-id="'+w.id+'" aria-label="Remove '+esc(w.w)+'">Remove</button></div></div>';
+  }).join('')+'</div>':'<p class="small">No words yet. Add the first one above.</p>';
+  el.innerHTML=h;
+  var ws=$('#wsent');if(ws)ws.value=WD.text;
+}
+
+/* ---------- PROGRESS ---------- */
+var confirmReset=false;
+function renderProgress(){
+  var el=$('#v-progress'),s=streakInfo(),t=day(),tot={bc:0,bt:0,w:0,wc:0,sp:0,sec:0};
+  Object.keys(S.days).forEach(function(k){var d=S.days[k];tot.bc+=d.bc||0;tot.bt+=d.bt||0;tot.w+=d.w||0;tot.wc+=d.wc||0;tot.sp+=d.sp||0;tot.sec+=d.sec||0});
+  function goal(label,v,g,unit){var p=Math.min(100,Math.round(v/g*100));return '<div class="goal"><span>'+label+'</span><span class="'+(v>=g?'done':'')+'">'+(v>=g?'Done':v+' / '+g+' '+unit)+'</span><div class="prog"><i style="width:'+p+'%"></i></div></div>'}
+  var h='<h1 class="h1">Your progress</h1>';
+  h+='<div class="big"><b>'+s.cur+'</b><span>day streak'+(s.cur===1?'':'s')+'</span><span class="small">Best: '+s.best+'</span></div>';
+  if(!s.todayDone&&s.cur>0)h+='<p class="note">Do one activity today to keep your streak.</p>';
+  h+='<h2 class="h2">Today’s goals</h2>'+goal('Build correct sentences',t.bc,GOAL.build,'')+goal('Write sentences',t.w,GOAL.write,'')+goal('Speak',Math.floor((t.sec||0)/60),GOAL.speak,'min');
+  var days=[],mx=5;
+  for(var i=13;i>=0;i--){var dt=new Date();dt.setDate(dt.getDate()-i);var k=dkey(dt),d=S.days[k]||{},v=(d.bc||0)+(d.w||0)+(d.sp||0);days.push({k:k,v:v,l:['S','M','T','W','T','F','S'][dt.getDay()],today:i===0});if(v>mx)mx=v}
+  h+='<h2 class="h2">Last 14 days</h2><div class="chart" role="img" aria-label="Sentences made per day for the last 14 days">'+days.map(function(d){return '<div class="col" title="'+d.k+': '+d.v+' sentences"><div class="bar'+(d.today?' today':'')+'" style="height:'+Math.max(2,Math.round(d.v/mx*100))+'%"></div></div>'}).join('')+'</div><div class="axis">'+days.map(function(d){return '<span>'+d.l+'</span>'}).join('')+'</div><p class="small">Sentences made per day: built correctly, written and spoken.</p>';
+  h+='<div class="stats"><div class="stat"><b>'+(tot.bt?Math.round(100*tot.bc/tot.bt)+'%':'–')+'</b><span>build accuracy</span></div><div class="stat"><b>'+tot.bc+'</b><span>sentences built</span></div><div class="stat"><b>'+tot.w+'</b><span>sentences written</span></div><div class="stat"><b>'+Math.round(tot.sec/60)+'</b><span>minutes speaking</span></div><div class="stat"><b>'+S.words.length+'</b><span>words in bank</span></div></div>';
+  h+='<h2 class="h2">Pattern strength</h2>'+PATTERNS.map(function(p){var m=mastery(p.id),a=(S.pat[p.id]||{}).a||0;return '<div class="mrow"><span>'+esc(p.name)+'</span><div class="prog"><i style="width:'+(m||0)+'%"></i></div><span class="pct">'+(a?m+'% · '+a:'Not started')+'</span></div>'}).join('');
+  h+='<h2 class="h2">Mistakes to review</h2>';
+  h+=S.mistakes.length?S.mistakes.slice(0,12).map(function(m){return '<div class="mist"><div><div class="src">'+(m.src==='speak'?'Speaking':'Writing')+'</div><div class="wr">'+esc(m.wrong)+'</div><div class="rt">'+esc(m.right)+'</div>'+(m.why?'<div class="small">'+esc(m.why)+'</div>':'')+'</div><button class="btn quiet sm" data-act="gotIt" data-id="'+m.id+'">Got it</button></div>'}).join(''):'<p class="small">Mistakes from your speaking and writing appear here, with the fix. Review them, then tap Got it.</p>';
+  h+='<div class="actions" style="margin-top:28px">'+(confirmReset?'<button class="btn danger sm" data-act="resetYes">Delete all progress</button><button class="btn ghost sm" data-act="resetNo">Keep it</button>':'<button class="btn quiet sm" data-act="resetAsk">Reset progress</button>')+'</div>';
+  el.innerHTML=h;
+}
+
+/* ---------- events ---------- */
+document.addEventListener('click',function(e){
+  var b=e.target.closest('[data-act]');if(!b)return;
+  var a=b.dataset.act,d=b.dataset;
+  switch(a){
+    case 'nav':show(d.view);break;
+    case 'say':say(d.t);break;
+    case 'sub':P.sub=d.sub;renderPractice();break;
+    case 'openLesson':P.lesson=d.id;P.ylText='';P.ylOut='';renderPractice();window.scrollTo(0,0);break;
+    case 'lessonBack':P.lesson=null;renderPractice();break;
+    case 'buildThis':P.sub='build';startBuild(d.id,d.mode);renderPractice();window.scrollTo(0,0);break;
+    case 'checkLesson':lessonCheck(d.id);break;
+    case 'setMode':B.mode=d.mode;renderPractice();break;
+    case 'startBuild':startBuild(B.pid||'all',B.mode);renderPractice();break;
+    case 'buildReset':B.started=false;B.done=false;renderPractice();break;
+    case 'place':if(B.state!=='right'){B.placed.push(Number(d.id));renderPractice()}break;
+    case 'unplace':if(B.state!=='right'){B.placed=B.placed.filter(function(x){return x!==Number(d.id)});renderPractice()}break;
+    case 'clearTiles':B.placed=[];renderPractice();break;
+    case 'checkBuild':checkBuild();break;
+    case 'retry':B.state='idle';B.placed=[];B.why='';renderPractice();break;
+    case 'nextItem':B.i++;if(B.i>=B.queue.length){B.done=true}else{setupItem()}renderPractice();window.scrollTo(0,0);break;
+    case 'why':whyAsk();break;
+    case 'topic':SP.topic=d.t;SP.kind=d.kind||'topic';renderSpeak();break;
+    case 'helpSpeak':helpSpeak();break;
+    case 'mins':SP.mins=Number(d.m);renderSpeak();break;
+    case 'startSpeak':startSpeak();break;
+    case 'sendSpeak':sendSpeak();break;
+    case 'retryReply':getReply();break;
+    case 'mic':micToggle();break;
+    case 'endSpeak':
+      if(!SP.confirmEnd){SP.confirmEnd=true;b.textContent='Tap again to end';setTimeout(function(){SP.confirmEnd=false;var x=$('#endBtn');if(x)x.textContent='End session'},3000)}
+      else{SP.confirmEnd=false;endSpeak(false)}
+      break;
+    case 'speakAgain':SP.phase='setup';renderSpeak();break;
+    case 'checkWrite':writeCheck();break;
+    case 'newPrompt':W.offset++;W.out='';renderWrite();break;
+    case 'addWord':addWords();break;
+    case 'delWord':S.words=S.words.filter(function(w){return w.id!==d.id});if(WD.id===d.id){WD.id=null;WD.out=''}save();renderWords();break;
+    case 'pickWord':WD.id=d.id;WD.text='';WD.out='';renderWords();window.scrollTo(0,0);break;
+    case 'randWord':if(S.words.length){var w=S.words[Math.floor(Math.random()*S.words.length)];WD.id=w.id;WD.text='';WD.out='';renderWords();window.scrollTo(0,0)}break;
+    case 'closeWord':WD.id=null;WD.out='';renderWords();break;
+    case 'checkWord':wordCheck();break;
+    case 'exWord':wordExamples();break;
+    case 'gotIt':S.mistakes=S.mistakes.filter(function(m){return m.id!==d.id});save();renderProgress();break;
+    case 'resetAsk':confirmReset=true;renderProgress();break;
+    case 'resetNo':confirmReset=false;renderProgress();break;
+    case 'resetYes':confirmReset=false;S=defaults();save();updateStreak();renderProgress();break;
+  }
+});
+document.addEventListener('input',function(e){
+  var id=e.target.id;
+  if(id==='typed')B.typed=e.target.value;
+  else if(id==='yt')P.ylText=e.target.value;
+  else if(id==='spIn')SP.draft=e.target.value;
+  else if(id==='wt'){setDraft(e.target.value);updateWCount()}
+  else if(id==='wsent')WD.text=e.target.value;
+});
+document.addEventListener('change',function(e){
+  if(e.target.id==='bPat')B.pid=e.target.value;
+  if(e.target.id==='voiceOn')SP.voice=e.target.checked;
+});
+document.addEventListener('keydown',function(e){
+  if(e.key!=='Enter'||e.shiftKey||e.isComposing)return;
+  var id=e.target.id;
+  if(id==='typed'){e.preventDefault();checkBuild()}
+  else if(id==='spIn'){e.preventDefault();sendSpeak()}
+  else if(id==='wIn'||id==='mIn'){e.preventDefault();addWords()}
+});
+
+/* ---------- async actions ---------- */
+async function lessonCheck(pid){
+  var out=$('#ylOut'),txt=P.ylText.trim(),p=patOf(pid);
+  if(!sentencesOf(txt).length){P.ylOut='<p class="note">Write at least one sentence first.</p>';if(out)out.innerHTML=P.ylOut;return}
+  P.ylOut='<p class="note">Claude is checking…</p>';if(out)out.innerHTML=P.ylOut;
+  try{
+    var r=await checkWriting(txt,'The learner is practicing this pattern: '+p.name+' ('+p.formula+'). Also say if a sentence does not use the pattern.');
+    var good=recWriting(r,'write');
+    P.ylOut=feedbackHTML(r,good);
+  }catch(e){P.ylOut='<p class="note">'+esc(errCopy(e))+'</p>'}
+  if(view==='practice'&&P.lesson===pid){var o=$('#ylOut');if(o)o.innerHTML=P.ylOut}
+}
+async function whyAsk(){
+  var it=B.queue[B.i],box=$('#why');if(!box)return;
+  box.innerHTML='<div class="why">Thinking…</div>';
+  var prompt='A Bangladeshi learner (about A2 level) translated a Bangla sentence into English.\nBangla: '+it.bn+'\nLearner\'s English: '+B.mine+'\nModel answer: '+it.en+'\nIn at most 3 short sentences of plain English: say whether the learner\'s sentence is correct and means the same (it may differ from the model answer and still be fine). If it is wrong, explain the main mistake simply and give one fixed version.';
+  try{B.why=await askText(prompt,{modelTier:'default'})}catch(e){B.why=errCopy(e)}
+  var b2=$('#why');if(b2)b2.innerHTML='<div class="why">'+esc(B.why)+'</div>';
+}
+async function writeCheck(){
+  if(W.busy)return;
+  var t=$('#wt'),out=$('#wOut'),txt=t?t.value.trim():'';
+  if(!sentencesOf(txt).length){W.out='<p class="note">Write at least one sentence first.</p>';out.innerHTML=W.out;return}
+  W.busy=true;var btn=$('#wBtn');if(btn)btn.disabled=true;
+  out.innerHTML='<p class="note">Claude is checking your writing…</p>';
+  try{
+    var r=await checkWriting(txt,'The question was: '+todayPrompt());
+    var good=recWriting(r,'write');
+    W.out=feedbackHTML(r,good);
+  }catch(e){W.out='<p class="note">'+esc(errCopy(e))+'</p>'}
+  W.busy=false;
+  if(view==='write'){var o=$('#wOut');if(o)o.innerHTML=W.out;var b=$('#wBtn');if(b)b.disabled=false}
+}
+function addWords(){
+  var wi=$('#wIn'),mi=$('#mIn');if(!wi)return;
+  var raw=wi.value.split(',').map(function(x){return x.trim()}).filter(Boolean),m=mi?mi.value.trim():'';
+  if(!raw.length)return;
+  raw.forEach(function(w){
+    if(S.words.some(function(x){return x.w.toLowerCase()===w.toLowerCase()}))return;
+    S.words.unshift({id:uid(),w:w.slice(0,40),m:raw.length===1?m.slice(0,80):''});
+  });
+  save();renderWords();var f=$('#wIn');if(f)f.focus();
+}
+async function wordCheck(){
+  var cur=S.words.filter(function(w){return w.id===WD.id})[0],out=$('#wdOut');
+  var txt=WD.text.trim();if(!cur||!out)return;
+  if(!txt){WD.out='<p class="note">Write a sentence first.</p>';out.innerHTML=WD.out;return}
+  out.innerHTML='<p class="note">Claude is checking…</p>';
+  var prompt='A Bangladeshi learner (about A2 level) wrote one sentence to practice the word "'+cur.w+'"'+(cur.m?' (meaning: '+cur.m+')':'')+'.\nSentence: "'+txt.replace(/"/g,"'")+'"\nReply with only JSON: {"uses_word":true,"ok":true,"better":"a corrected or more natural version that uses the word (same as the sentence if it is already good)","why":"one short sentence in plain English, empty if ok"}';
+  try{
+    var r=await askJSON(prompt,{modelTier:'default'});
+    var ok=!!r.ok&&r.uses_word!==false,d=day();d.w++;if(ok)d.wc++;
+    if(!ok)addMistake(txt,String(r.better||''),String(r.why||''),'write');
+    save();updateStreak();
+    WD.out=ok?'<div class="fb good"><strong>Good sentence.</strong> '+esc(r.better||txt)+'</div>':'<div class="fb bad"><div class="lbl">Better</div><div class="line ok">'+esc(r.better||'')+'</div>'+(r.why?'<p class="small" style="margin:0">'+esc(r.why)+'</p>':'')+(r.uses_word===false?'<p class="small" style="margin:6px 0 0">Your sentence should use the word “'+esc(cur.w)+'”.</p>':'')+'</div>';
+  }catch(e){WD.out='<p class="note">'+esc(errCopy(e))+'</p>'}
+  var o=$('#wdOut');if(view==='words'&&o&&WD.id===cur.id)o.innerHTML=WD.out;
+}
+async function wordExamples(){
+  var cur=S.words.filter(function(w){return w.id===WD.id})[0],out=$('#wdOut');if(!cur||!out)return;
+  out.innerHTML='<p class="note">Thinking…</p>';
+  var prompt='Give 3 very simple example sentences with the word "'+cur.w+'" for an A2 English learner. Use a different sentence pattern in each one.\nReply with only JSON: {"examples":["..."]}';
+  try{
+    var r=await askJSON(prompt,{modelTier:'quick'});
+    var ex=(r&&Array.isArray(r.examples)?r.examples:[]).slice(0,3);
+    if(!ex.length)throw {code:'invalid_json'};
+    WD.out='<ul class="ex" style="margin-top:12px">'+ex.map(function(x){return '<li><div class="en" style="font-size:18px">'+esc(x)+'</div><button class="icon sm" data-act="say" data-t="'+esc(x)+'" aria-label="Listen">'+IC.listen+'</button></li>'}).join('')+'</ul>';
+  }catch(e){WD.out='<p class="note">'+esc(errCopy(e))+'</p>'}
+  var o=$('#wdOut');if(view==='words'&&o&&WD.id===cur.id)o.innerHTML=WD.out;
+}
+
+/* ---------- boot ---------- */
+updateStreak();
+renderPractice();
+})();
+</script>
+
+</body></html>
